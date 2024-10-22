@@ -11,5 +11,14 @@ namespace AuthCrud.Models
         {
             optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.email)
+                .IsUnique();
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

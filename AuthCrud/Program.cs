@@ -2,7 +2,7 @@ using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
-DotNetEnv.Env.Load();
+Env.Load();
 
 var connectionString = Environment.GetEnvironmentVariable("DBConnectionStrings");
 if (string.IsNullOrEmpty(connectionString))
