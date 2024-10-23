@@ -52,7 +52,7 @@ namespace AuthCrud.Controllers
         {
             try
             {
-                User user = new User { email = parameters.email, password = parameters.password, name = parameters.name };
+                User user = new User { email = parameters.email, password = parameters.password, name = parameters.name, role = "User" };
 
                 var results = new List<ValidationResult>();
                 var validContext = new ValidationContext(user, null, null);

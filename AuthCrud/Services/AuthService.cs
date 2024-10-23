@@ -29,6 +29,7 @@ namespace AuthCrud.Services
         {
             var claims = new ClaimsIdentity();
             claims.AddClaim(new Claim(ClaimTypes.Name, user.email));
+            claims.AddClaim(new Claim(ClaimTypes.Role, user.role));
 
             return claims;
         }
