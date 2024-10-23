@@ -7,6 +7,9 @@ Env.Load();
 var connectionString = Environment.GetEnvironmentVariable("DBConnectionStrings");
 if (string.IsNullOrEmpty(connectionString))
     throw new Exception("Connection string not found. Ensure the .env file is correctly configured and placed in the root directory.");
+var privateKey = Environment.GetEnvironmentVariable("PrivateKey");
+if (string.IsNullOrEmpty(privateKey))
+    throw new Exception("PrivateKey not found. Ensure the .env file is correctly configured and placed in the root directory.");
 
 // Add services to the container.
 
