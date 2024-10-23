@@ -1,5 +1,6 @@
 ﻿using AuthCrud.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,6 +10,12 @@ namespace AuthCrud.Controllers
     {
         public required string title { get; set; }
         public required string description { get; set; }
+    }
+
+    public class UpdateTodoParameter
+    {
+        public string title { get; set; }
+        public string description { get; set; }
     }
 
     [Route("api/todo")]
@@ -21,15 +28,20 @@ namespace AuthCrud.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            Todo[] todos = context.Todos.ToArray();
-            return Ok();
+            Todo[] todos = context.Todos.Where(p => p.id >= 1).ToArray();
+            return Ok(todos);
         }
 
-        // GET api/<CRUDController>/5
+        // GET api/todo/id
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult Get(int id)
         {
-            return "value";
+            Todo todo = context.Todos.Where(p => p.id == id).FirstOrDefault()!;
+            if (todo == null)
+            {
+                return NotFound(new { message = "Cannot Find Item" });
+            }
+            return Ok(todo);
         }
 
         // POST api/todo
@@ -43,16 +55,42 @@ namespace AuthCrud.Controllers
             return Ok(new { message = "Create Todo Successfully." });
         }
 
-        // PUT api/<CRUDController>/5
+        // PUT api/todo/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, UpdateTodoParameter parameter)
         {
+            Todo todo = context.Todos.Where(p => p.id == id).FirstOrDefault()!;
+            if (todo == null)
+            {
+                return NotFound(new { message = "Cannot Find Item" });
+            }
+
+            if (parameter.title != null)
+            {
+                todo.title = parameter.title;
+            }
+            if (parameter.description != null)
+            {
+                todo.description = parameter.description;
+            }
+            context.Todos.Update(todo);
+            context.SaveChanges();
+
+            return Ok(new { message = "Update Successfully." });
         }
 
-        // DELETE api/<CRUDController>/5
+        // DELETE api/todo/id
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            Todo todo = context.Todos.Where(p => p.id == id).FirstOrDefault()!;
+            if (todo == null)
+            {
+                return NotFound(new { message = "Cannot Find Item" });
+            }
+            context.Todos.Where(p => p.id == id).ExecuteDelete();
+
+            return Ok(new { message = "Delete Successfully." });
         }
     }
 }
